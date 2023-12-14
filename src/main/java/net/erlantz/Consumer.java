@@ -12,13 +12,14 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class Consumer {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // Crea las propiedades del consumidor
         Properties properties = new Properties();
         properties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "erlantz.eu:39090,erlantz.eu:39091,erlantz.eu:39092");
         properties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");
+        properties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 
         // Crea el consumidor
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties)) {
@@ -33,6 +34,7 @@ public class Consumer {
                     // Imprime el mensaje
                     System.out.println(record.value());
                 }
+                Thread.sleep(Duration.ofSeconds(1));
             }
         }
     }
