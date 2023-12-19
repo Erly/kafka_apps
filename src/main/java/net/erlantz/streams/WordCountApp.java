@@ -31,14 +31,10 @@ public class WordCountApp {
                 .flatMapValues(textLine -> Arrays.asList(textLine.toLowerCase().split("\\W+")))
                 .groupBy((key, word) -> word)
                 .count(Materialized.as("counts-store"));
+
         wordCounts.toStream()
                 .peek((k,v) -> System.out.printf("Observed event: %s - %s%n", k, v))
                 .to("rafa_pons_count", Produced.with(Serdes.String(), Serdes.Long()));
-
-//        lines.flatMap((key, value) -> Stream.of(value.split(" ")))
-//                .groupBy(word -> word)
-//                .count()
-//                .to("output-topic");
 
         final Topology topology = builder.build();
         System.out.println(topology.describe());
